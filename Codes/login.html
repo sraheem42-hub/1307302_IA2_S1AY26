@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="../script.js" defer></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+    <!-- LOGIN STATUS -->
+    <div id="user-status" class="login-status-box">
+        <!-- Script fills this automatically -->
+    </div>
+    <p>User Login</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<div class="container">
+    <h2>Login to Your Account</h2>
+    <form id="loginForm">
+        <label>Username:</label><br>
+        <input type="text" id="username" required><br><br>
+
+        <label>Password:</label><br>
+        <input type="password" id="password" required><br><br>
+
+        <button type="submit">Login</button>
+    </form>
+</div>
+
+<div class="footer">
+    <p>© 2025 RahPixel Designs — All Rights Reserved</p>
+</div>
+
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    login(username, password);
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <script defer src="../script.js"></script>
+    <style>
+        /* Optional: quick styling for alerts */
+        input, button { padding: 8px; width: 100%; max-width: 400px; margin-bottom: 10px; }
+        button { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+    <!-- LOGIN STATUS -->
+    <div id="user-status" class="login-status-box">
+        <!-- Script fills this automatically -->
+    </div>
+    <p>Create an Account</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<div class="container">
+    <h2>Registration Form</h2>
+    <form id="registerForm">
+        <label>Full Name:</label><br>
+        <input type="text" id="fullname" required><br>
+
+        <label>Date of Birth:</label><br>
+        <input type="date" id="dob" required><br>
+
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br>
+
+        <label>Username:</label><br>
+        <input type="text" id="username" required><br>
+
+        <label>Password:</label><br>
+        <input type="password" id="password" required><br>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+
+<div class="footer">
+    <p>© 2025 RahPixel Designs — All Rights Reserved</p>
+</div>
+
+<script>
+// Listen for form submission
+document.getElementById('registerForm').addEventListener('submit', function(e){
+    e.preventDefault(); // prevent default form submission
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const dob = document.getElementById('dob').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    register(fullname, dob, email, username, password);
+});
+
+// Registration function
+function register(fullname, dob, email, username, password) {
+    const user = { fullname, dob, email, username, password };
+
+    // Retrieve users from localStorage or create empty array
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+
+    // Check if username or email exists
+    const exists = users.some(u => u.username === username || u.email === email);
+    if (exists) {
+        alert("Username or email already exists!");
+        return;
+    }
+
+    // Add user and save back to localStorage
+    users.push(user);
+    localStorage.setItem('users', JSON.stringify(users));
+
+    alert("Registration successful!");
+    document.getElementById('registerForm').reset();
+}
+</script>
+
+</body>
+</html>

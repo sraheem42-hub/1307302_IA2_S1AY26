@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Posters & Flyers | RahPixel Designs</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Fancy Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- JS -->
+    <script src="../script.js"></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+       </div>
+
+    <!-- LOGIN STATUS -->
+    <div id="user-status" class="login-status-box">
+        <!-- Script fills this automatically -->
+    </div>
+    <p>Custom Posters & Flyers Request</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<div class="container">
+    <h2>Create Your Custom Poster/Flyer</h2>
+
+    <div class="custom-request" style="margin-top: 20px; padding: 20px; border: 2px solid #b80000; border-radius: 12px; background: #fff;">
+        <p>Tell us what you want for your custom poster or flyer. Each custom poster costs $20.</p>
+
+        <form id="posterForm">
+            <label>Your Name:</label><br>
+            <input type="text" id="posterName" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+            <label>Email:</label><br>
+            <input type="email" id="posterEmail" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+            <label>Describe Your Poster/Flyer Request:</label><br>
+            <textarea id="posterDescription" rows="6" placeholder="Provide details about your custom poster/flyer..." required style="width: 100%; padding: 8px; margin-bottom: 10px;"></textarea><br>
+
+            <button type="submit">Add to Cart ($20)</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const posterForm = document.getElementById('posterForm');
+    posterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        addToCart('Custom Poster/Flyer', 20);
+        posterForm.reset();
+        alert('Custom poster/flyer added to cart for $20!');
+    });
+</script>
+
+<div class="footer">
+    <p>© 2025 RahPixel Designs — All Rights Reserved</p>
+</div>
+
+</body>
+</html>

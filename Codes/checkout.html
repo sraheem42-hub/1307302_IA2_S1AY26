@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="../script.js" defer></script>
+</head>
+
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+        <div id="user-status" class="login-status-box"></div>
+    </div>
+    <p>Checkout</p>
+</header>
+
+<nav>
+    <a href="index.html">Products</a>
+    <a href="login.html" id="navLogin">Login</a>
+    <a href="register.html" id="navRegister">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<main class="container">
+
+    <h2>Invoice</h2>
+    <div id="invoiceSection"></div>
+
+    <h2>Billing Information</h2>
+    <form id="billingForm">
+
+        <label>Full Name:</label>
+        <input type="text" id="fullname" required><br><br>
+
+        <label>Billing Address:</label>
+        <input type="text" id="address" required><br><br>
+
+        <label>Email (Receipt Delivery):</label>
+        <input type="email" id="email" required><br><br>
+
+        <h3>Card Details</h3>
+
+        <label>Card Number:</label>
+        <input type="text" id="cardNumber" maxlength="16" required><br><br>
+
+        <label>Expiry Date:</label>
+        <input type="month" id="expiry" required><br><br>
+
+        <label>CVV:</label>
+        <input type="text" id="cvv" maxlength="3" required><br><br>
+
+        <button type="submit">Confirm Payment</button>
+        <button type="button" onclick="window.location='cart.html'">Cancel</button>
+        <button type="button" onclick="clearCart(); loadInvoice();">Clear All</button>
+    </form>
+
+    <button id="printReceiptBtn" style="margin-top: 20px;">Generate Receipt</button>
+
+</main>
+
+
+<script>
+
+/* =======================
+      LOAD INVOICE
+   ======================= */
+function loadInvoice() {
+    let invoiceDiv = document.getElementById("invoiceSection");
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    if (cart.length === 0) {
+        invoiceDiv.innerHTML = "<p>Your cart is empty.</p>";
+        return;
+    }
+
+    let total = 0;
+    let html = `
+        <table border="1" cellpadding="8" style="width:100%; border-collapse:collapse;">
+            <tr>
+                <th>Product</th><th>Price</th><th>Qty</th><th>Subtotal</th>
+            </tr>
+    `;
+
+    cart.forEach(item => {
+        let subtotal = item.price * item.qty;
+        total += subtotal;
+
+        html += `
+            <tr>
+                <td>${item.name}</td>
+                <td>$${item.price.toFixed(2)}</td>
+                <td>${item.qty}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+            </tr>
+        `;
+    });
+
+    html += `
+        <tr>
+            <td colspan="3"><strong>Total</strong></td>
+            <td><strong>$${total.toFixed(2)}</strong></td>
+        </tr>
+        </table>
+    `;
+
+    invoiceDiv.innerHTML = html;
+}
+
+
+
+/* =======================
+   GENERATE RECEIPT ID
+   ======================= */
+function generateReceiptID() {
+    const now = new Date();
+    const datePart = now.getFullYear().toString() +
+                     String(now.getMonth()+1).padStart(2, '0') +
+                     String(now.getDate()).padStart(2, '0');
+
+    const randomPart = Math.floor(10000 + Math.random() * 90000);
+
+    return `RP-${datePart}-${randomPart}`;
+}
+
+
+
+/* =======================
+      BILLING SUBMIT
+   ======================= */
+document.getElementById("billingForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    alert("Payment confirmed! Receipt has been generated.");
+
+    localStorage.setItem("receipt", JSON.stringify({
+        id: generateReceiptID(),
+        name: fullname.value,
+        address: address.value,
+        email: email.value,
+        card: "**** **** **** " + cardNumber.value.slice(-4),
+        date: new Date().toLocaleString(),
+        cart: JSON.parse(localStorage.getItem("cart"))
+    }));
+});
+
+
+
+/* =======================
+         PRINT RECEIPT
+   ======================= */
+document.getElementById("printReceiptBtn").addEventListener("click", function () {
+    let receipt = JSON.parse(localStorage.getItem("receipt"));
+
+    if (!receipt) {
+        alert("No receipt available. Complete a purchase first.");
+        return;
+    }
+
+    window.location = "receipt.html";
+});
+
+
+
+// LOAD INVOICE ON PAGE OPEN
+window.addEventListener("DOMContentLoaded", loadInvoice);
+
+</script>
+
+</body>
+</html>

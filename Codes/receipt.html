@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #f8f3ef;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .receipt-container {
+            background: white;
+            padding: 25px;
+            max-width: 700px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.15);
+        }
+
+        h1, h2 {
+            font-family: "Playfair Display", serif;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table, th, td {
+            border: 1px solid #b9b9b9;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        .btn-area {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .btn-area button {
+            padding: 10px 20px;
+            border: none;
+            background: #d72638;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 0 8px;
+        }
+
+        .btn-area button:hover {
+            background: #a91f2a;
+        }
+
+        /* Hide buttons when printing */
+        @media print {
+            .btn-area {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="receipt-container">
+    <h1>RahPixel Designs</h1>
+    <p><strong>Official Receipt</strong></p>
+    <p><strong>Receipt ID:</strong> <span id="rID"></span></p>
+    <hr><br>
+
+    <h2>Customer Information</h2>
+    <p><strong>Name:</strong> <span id="rName"></span></p>
+    <p><strong>Card Used:</strong> <span id="rCard"></span></p>
+    <p><strong>Date:</strong> <span id="rDate"></span></p>
+
+    <br>
+    <h2>Items Purchased</h2>
+
+    <table id="itemsTable">
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Subtotal</th>
+        </tr>
+    </table>
+
+    <h2 style="text-align:right; margin-top:20px;">
+        Total: $<span id="rTotal"></span>
+    </h2>
+
+    <div class="btn-area">
+        <button onclick="printReceipt()">🖨 Print Receipt</button>
+        <button onclick="downloadPDF()">📄 Download PDF</button>
+    </div>
+</div>
+
+<script>
+window.addEventListener("DOMContentLoaded", function() {
+    let receipt = JSON.parse(localStorage.getItem("receipt"));
+
+    if(!receipt){
+        document.body.innerHTML = "<h2>No receipt found!</h2>";
+        return;
+    }
+
+    document.getElementById("rID").textContent = receipt.id;
+    document.getElementById("rName").textContent = receipt.name;
+    document.getElementById("rCard").textContent = receipt.card;
+    document.getElementById("rDate").textContent = receipt.date;
+
+    let table = document.getElementById("itemsTable");
+    let total = 0;
+
+    receipt.cart.forEach(item => {
+        let subtotal = item.price * item.qty;
+        total += subtotal;
+
+        let row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>${item.qty}</td>
+            <td>$${subtotal.toFixed(2)}</td>
+        `;
+        table.appendChild(row);
+    });
+
+    document.getElementById("rTotal").textContent = total.toFixed(2);
+});
+
+// Print receipt
+function printReceipt(){
+    window.print();
+}
+
+// Download PDF (relies on browser’s print-to-PDF)
+function downloadPDF(){
+    window.print();
+}
+</script>
+
+</body>
+</html>

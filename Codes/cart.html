@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="../script.js" defer></script>
+    <style>
+        /* ===== BILLING POPUP MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white;
+            padding: 25px;
+            width: 350px;
+            border-radius: 8px;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .cancel-btn {
+            background: red;
+            color: white;
+            padding: 8px;
+            margin-top: 5px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .cancel-btn:hover {
+            background: #cc0000;
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 10px;
+            background: #b80000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
+        .modal-content button:hover {
+            background: #8c0000;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+        <!-- LOGIN STATUS -->
+        <div id="user-status" class="login-status-box"></div>
+    </div>
+    <p>Your Shopping Cart</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<div class="container">
+    <h2>Cart Details</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody id="cart-table"></tbody>
+    </table>
+
+    <h3>Total: <span id="total">$0.00</span></h3>
+
+    <div class="cart-buttons" style="margin-top: 15px;">
+        <button onclick="clearCart()">Clear All</button>
+        <button onclick="checkout()">Checkout</button>
+    </div>
+</div>
+
+<!-- ===== BILLING POPUP MODAL ===== -->
+<div id="billing-modal" class="modal">
+    <div class="modal-content">
+        <h2>Billing Information</h2>
+
+        <label>Full Name</label>
+        <input type="text" id="bill-name" required>
+
+        <label>Card Number</label>
+        <input type="text" id="bill-card" maxlength="16" required>
+
+        <label>Expiry (MM/YY)</label>
+        <input type="text" id="bill-exp" placeholder="MM/YY" required>
+
+        <label>CVV</label>
+        <input type="password" id="bill-cvv" maxlength="3" required>
+
+        <button onclick="confirmPayment()">Confirm Payment</button>
+        <button onclick="closeBillingModal()" class="cancel-btn">Cancel</button>
+    </div>
+</div>
+
+<div class="footer">
+    <p>© 2025 RahPixel Designs — All Rights Reserved</p>
+</div>
+
+<script>
+/* ===== CART FUNCTIONS ===== */
+function loadCart() {
+    const cartTable = document.getElementById('cart-table');
+    const totalEl = document.getElementById('total');
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    if (!cartTable || !totalEl) return;
+
+    cartTable.innerHTML = '';
+    let total = 0;
+
+    cart.forEach(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
+            <td>${item.qty}</td>
+            <td>$${subtotal.toFixed(2)}</td>
+        `;
+        cartTable.appendChild(row);
+    });
+
+    totalEl.textContent = `$${total.toFixed(2)}`;
+}
+
+function clearCart() {
+    if (confirm('Are you sure you want to clear the cart?')) {
+        localStorage.removeItem('cart');
+        loadCart();
+        alert('Cart cleared.');
+    }
+}
+
+/* ===== CHECKOUT TO BILLING ===== */
+function checkout() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if (cart.length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    document.getElementById('billing-modal').style.display = 'flex';
+}
+
+function closeBillingModal() {
+    document.getElementById('billing-modal').style.display = 'none';
+}
+
+/* ===== CONFIRM PAYMENT ===== */
+function confirmPayment() {
+    let name = document.getElementById('bill-name').value;
+    let card = document.getElementById('bill-card').value;
+    let exp = document.getElementById('bill-exp').value;
+    let cvv = document.getElementById('bill-cvv').value;
+
+    if (!name || !card || !exp || !cvv) {
+        alert("Please complete all billing fields.");
+        return;
+    }
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    if(cart.length === 0){
+        alert("Cart is empty!");
+        closeBillingModal();
+        return;
+    }
+
+    // Generate Receipt
+    function generateReceiptID() {
+        const now = new Date();
+        const datePart = now.getFullYear().toString() +
+                        String(now.getMonth()+1).padStart(2,'0') +
+                        String(now.getDate()).padStart(2,'0');
+        const randomPart = Math.floor(10000 + Math.random() * 90000);
+        return `RP-${datePart}-${randomPart}`;
+    }
+
+    const receipt = {
+        id: generateReceiptID(),
+        name: name,
+        card: "**** **** **** " + card.slice(-4),
+        address: "", // optional: add address if needed
+        email: "",   // optional: add email if needed
+        date: new Date().toLocaleString(),
+        cart: cart
+    };
+
+    localStorage.setItem('receipt', JSON.stringify(receipt));
+
+    // Clear cart and close modal
+    localStorage.removeItem('cart');
+    loadCart();
+    closeBillingModal();
+
+    // Redirect to receipt page
+    window.location.href = "receipt.html";
+}
+
+/* ===== AUTO LOAD CART ===== */
+document.addEventListener('DOMContentLoaded', loadCart);
+</script>
+
+</body>
+</html>

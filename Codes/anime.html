@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Anime Wallpapers | RahPixel Designs</title>
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+    <script src="../script.js" defer></script>
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <img src="../Assets/logo.png" alt="RahPixel Logo" class="logo">
+        <h1>RahPixel Designs</h1>
+    </div>
+
+    <!-- LOGIN STATUS -->
+    <div id="user-status" class="login-status-box">
+        <!-- Script fills this automatically -->
+    </div>
+    <p>Anime Wallpaper Collection</p>
+</header>
+
+<nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+    <a href="register.html">Register</a>
+    <a href="cart.html">Cart</a>
+    <a href="about.html">About Us</a>
+</nav>
+
+<div class="container">
+    <h2>Available Anime Wallpapers</h2>
+    <div class="product-grid">
+        <div class="product">
+            <img src="../Assets/anime/anime1.jpg">
+            <h3>Anime 1</h3>
+            <p>$14</p>
+            <button onclick="addToCart('Anime 1', 10)">Add to Cart</button>
+        </div>
+        <div class="product">
+            <img src="../Assets/anime/anime2.jpg">
+            <h3>Anime 2</h3>
+            <p>$12</p>
+            <button onclick="addToCart('Anime 2', 12)">Add to Cart</button>
+        </div>
+        <div class="product">
+            <img src="../Assets/anime/anime3.jpg">
+            <h3>Anime 3</h3>
+            <p>$12</p>
+            <button onclick="addToCart('Anime 3', 11)">Add to Cart</button>
+        </div>
+        <div class="product">
+            <img src="../Assets/anime/anime4.jpg">
+            <h3>Anime 4</h3>
+            <p>$10</p>
+            <button onclick="addToCart('Anime 4', 13)">Add to Cart</button>
+        </div>
+        <div class="product">
+            <img src="../Assets/anime/anime5.jpg">
+            <h3>Anime 5</h3>
+            <p>$10</p>
+            <button onclick="addToCart('Anime 5', 14)">Add to Cart</button>
+        </div>
+        <div class="product">
+            <img src="../Assets/anime/anime6.jpg">
+            <h3>Anime 6</h3>
+            <p>$10</p>
+            <button onclick="addToCart('Anime 6', 15)">Add to Cart</button>
+        </div>
+    </div>
+
+    <div class="custom-request" style="margin-top: 50px; padding: 20px; border: 2px solid #b80000; border-radius: 12px; background: #fff;">
+        <h2>Request a Custom Wallpaper</h2>
+        <p>Each custom wallpaper costs $20. Provide details below:</p>
+        <form id="customForm">
+            <label>Your Name:</label><br>
+            <input type="text" id="customName" required style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <label>Email:</label><br>
+            <input type="email" id="customEmail" required style="width:100%; padding:8px; margin-bottom:10px;"><br>
+            <label>Description:</label><br>
+            <textarea id="customDescription" rows="4" placeholder="Details about your custom wallpaper..." required style="width:100%; padding:8px; margin-bottom:10px;"></textarea><br>
+            <button type="submit">Add to Cart ($20)</button>
+        </form>
+    </div>
+</div>
+
+<div class="footer">
+    <p>© 2025 RahPixel Designs — All Rights Reserved</p>
+</div>
+
+<script>
+    // Handle Custom Wallpaper Form
+    const customForm = document.getElementById('customForm');
+    customForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        // Check login
+        if(!localStorage.getItem('loggedInUser')){
+            alert('You must be logged in to add items.');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // Build custom item name using user input
+        const name = `Custom Wallpaper: ${document.getElementById('customName').value}`;
+        const price = 20;
+        addToCart(name, price);
+
+        customForm.reset();
+        alert('Custom wallpaper added to cart for $20!');
+    });
+</script>
+
+</body>
+</html>
